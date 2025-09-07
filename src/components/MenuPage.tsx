@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ShoppingCart, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import CategoryTabs from "./CategoryTabs";
+import { ShoppingCart } from "lucide-react";
 import FoodCard from "./FoodCard";
 import Cart from "./Cart";
+import ItemDetailModal from "./ItemDetailModal";
 import { useCart } from "@/hooks/useCart";
 import risottoImg from "@/assets/risotto.jpg";
 import salmonImg from "@/assets/salmon.jpg";
@@ -28,6 +27,13 @@ export interface MenuItem {
   isSpicy?: boolean;
   rating?: number;
   prepTime?: string;
+  ingredients?: string[];
+  nutritionInfo?: {
+    calories: number;
+    protein: string;
+    carbs: string;
+    fat: string;
+  };
 }
 
 const sampleMenu: MenuItem[] = [
@@ -41,7 +47,14 @@ const sampleMenu: MenuItem[] = [
     modelUrl: "/models/risotto.glb",
     isVegetarian: true,
     rating: 4.8,
-    prepTime: "25 min"
+    prepTime: "25 min",
+    ingredients: ["Arborio Rice", "Wild Mushrooms", "Truffle Oil", "Parmesan", "White Wine", "Vegetable Broth", "Onions", "Garlic"],
+    nutritionInfo: {
+      calories: 420,
+      protein: "12g",
+      carbs: "58g", 
+      fat: "16g"
+    }
   },
   {
     id: "2", 
@@ -52,7 +65,14 @@ const sampleMenu: MenuItem[] = [
     category: "mains",
     modelUrl: "/models/salmon.glb",
     rating: 4.9,
-    prepTime: "20 min"
+    prepTime: "20 min",
+    ingredients: ["Atlantic Salmon", "Teriyaki Sauce", "Jasmine Rice", "Broccoli", "Carrots", "Snow Peas", "Sesame Seeds"],
+    nutritionInfo: {
+      calories: 520,
+      protein: "35g",
+      carbs: "45g",
+      fat: "18g"
+    }
   },
   {
     id: "3",
@@ -63,7 +83,14 @@ const sampleMenu: MenuItem[] = [
     category: "starters",
     modelUrl: "/models/calamari.glb",
     rating: 4.6,
-    prepTime: "15 min"
+    prepTime: "15 min",
+    ingredients: ["Fresh Squid", "Flour", "Cornmeal", "Marinara Sauce", "Lemon", "Parsley", "Red Pepper Flakes"],
+    nutritionInfo: {
+      calories: 280,
+      protein: "18g",
+      carbs: "22g",
+      fat: "14g"
+    }
   },
   {
     id: "4",
@@ -75,7 +102,14 @@ const sampleMenu: MenuItem[] = [
     modelUrl: "/models/lava-cake.glb",
     isVegetarian: true,
     rating: 4.9,
-    prepTime: "12 min"
+    prepTime: "12 min",
+    ingredients: ["Dark Chocolate", "Butter", "Eggs", "Sugar", "Flour", "Vanilla Ice Cream", "Mixed Berries"],
+    nutritionInfo: {
+      calories: 450,
+      protein: "8g",
+      carbs: "52g",
+      fat: "24g"
+    }
   },
   {
     id: "5",
@@ -84,12 +118,21 @@ const sampleMenu: MenuItem[] = [
     price: 14,
     image: cocktailImg,
     category: "drinks",
-    rating: 4.7
+    rating: 4.7,
+    prepTime: "5 min",
+    ingredients: ["Premium Spirits", "Fresh Citrus", "House-made Syrups", "Bitters", "Garnishes"],
+    nutritionInfo: {
+      calories: 180,
+      protein: "0g",
+      carbs: "12g",
+      fat: "0g"
+    }
   }
 ];
 
 const MenuPage = ({ onBack }: MenuPageProps) => {
   const [showCart, setShowCart] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const { getTotalItems } = useCart();
 
   const categories = [
@@ -101,6 +144,17 @@ const MenuPage = ({ onBack }: MenuPageProps) => {
 
   const getMenuByCategory = (categoryId: string) => {
     return sampleMenu.filter(item => item.category === categoryId);
+  };
+
+  const scrollToSection = (categoryId: string) => {
+    const element = document.getElementById(`category-${categoryId}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleItemClick = (item: MenuItem) => {
+    setSelectedItem(item);
   };
 
   return (
@@ -128,6 +182,25 @@ const MenuPage = ({ onBack }: MenuPageProps) => {
         </div>
       </header>
 
+      {/* Navigation */}
+      <nav className="sticky top-[88px] z-30 bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-6 py-3">
+          <div className="flex space-x-1 overflow-x-auto scrollbar-hide">
+            {categories.map((category) => (
+              <Button
+                key={category.id}
+                variant="ghost"
+                onClick={() => scrollToSection(category.id)}
+                className="flex items-center space-x-2 whitespace-nowrap hover:bg-primary/10 hover:text-primary transition-all duration-300"
+              >
+                <span className="text-lg">{category.icon}</span>
+                <span className="font-medium">{category.name}</span>
+              </Button>
+            ))}
+          </div>
+        </div>
+      </nav>
+
       {/* Menu by Categories */}
       <main className="container mx-auto px-6 py-8">
         {categories.map((category) => {
@@ -135,14 +208,14 @@ const MenuPage = ({ onBack }: MenuPageProps) => {
           if (categoryItems.length === 0) return null;
           
           return (
-            <section key={category.id} className="mb-12">
+            <section key={category.id} id={`category-${category.id}`} className="mb-12 scroll-mt-32">
               <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center">
                 <span className="text-3xl mr-3">{category.icon}</span>
                 {category.name}
               </h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {categoryItems.map((item) => (
-                  <FoodCard key={item.id} item={item} />
+                  <FoodCard key={item.id} item={item} onItemClick={handleItemClick} />
                 ))}
               </div>
             </section>
@@ -154,6 +227,13 @@ const MenuPage = ({ onBack }: MenuPageProps) => {
       <Cart 
         isOpen={showCart}
         onClose={() => setShowCart(false)}
+      />
+
+      {/* Item Detail Modal */}
+      <ItemDetailModal 
+        item={selectedItem}
+        isOpen={!!selectedItem}
+        onClose={() => setSelectedItem(null)}
       />
     </div>
   );

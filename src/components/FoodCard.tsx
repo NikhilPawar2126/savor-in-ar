@@ -7,18 +7,12 @@ import { MenuItem } from "./MenuPage";
 
 interface FoodCardProps {
   item: MenuItem;
+  onItemClick: (item: MenuItem) => void;
 }
 
-const FoodCard = ({ item }: FoodCardProps) => {
-  const { addItem } = useCart();
-
+const FoodCard = ({ item, onItemClick }: FoodCardProps) => {
   const handleCardClick = () => {
-    if (item.modelUrl) {
-      // Open AR model viewer - for now we'll show an alert
-      alert(`Opening AR view for ${item.name}. In production, this would launch the AR viewer with the 3D model.`);
-    } else {
-      addItem(item);
-    }
+    onItemClick(item);
   };
 
   return (
