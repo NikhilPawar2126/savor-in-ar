@@ -12,96 +12,67 @@ interface FoodCardProps {
 const FoodCard = ({ item }: FoodCardProps) => {
   const { addItem } = useCart();
 
-  const handleViewAR = () => {
+  const handleCardClick = () => {
     if (item.modelUrl) {
       // Open AR model viewer - for now we'll show an alert
       alert(`Opening AR view for ${item.name}. In production, this would launch the AR viewer with the 3D model.`);
+    } else {
+      addItem(item);
     }
   };
 
-  const handleAddToCart = () => {
-    addItem(item);
-  };
-
   return (
-    <Card className="group overflow-hidden bg-gradient-card border-border shadow-card-custom hover:shadow-glow transition-all duration-300">
+    <Card 
+      className="group overflow-hidden bg-gradient-card border-border shadow-card-custom hover:shadow-glow transition-all duration-300 cursor-pointer"
+      onClick={handleCardClick}
+    >
       <CardContent className="p-0">
         {/* Food Image */}
         <div className="relative aspect-[4/3] bg-gradient-to-br from-muted to-muted/50 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-          
-          {/* Placeholder for food image */}
           <img 
             src={item.image} 
             alt={item.name}
             className="w-full h-full object-cover"
           />
           
-          {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-            {item.isVegetarian && (
-              <Badge variant="secondary" className="bg-success/20 text-success border-success/30">
-                <Leaf className="w-3 h-3 mr-1" />
-                Veg
-              </Badge>
-            )}
-            {item.isSpicy && (
-              <Badge variant="secondary" className="bg-destructive/20 text-destructive border-destructive/30">
-                <Flame className="w-3 h-3 mr-1" />
-                Spicy
-              </Badge>
-            )}
+          {/* Price Badge */}
+          <div className="absolute top-3 right-3 bg-gradient-food text-primary-foreground rounded-full px-3 py-1">
+            <span className="text-lg font-bold">${item.price}</span>
           </div>
 
-          {/* Rating */}
-          {item.rating && (
-            <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm rounded-full px-2 py-1 flex items-center space-x-1">
-              <Star className="w-3 h-3 fill-warning text-warning" />
-              <span className="text-sm text-white font-medium">{item.rating}</span>
-            </div>
-          )}
-          
-          {/* AR Button Overlay */}
+          {/* AR Badge */}
           {item.modelUrl && (
-            <Button
-              onClick={handleViewAR}
-              variant="secondary"
-              size="sm"
-              className="absolute bottom-3 right-3 bg-black/50 backdrop-blur-sm hover:bg-primary border-white/20 group-hover:scale-105 transition-transform"
-            >
-              <Eye className="w-4 h-4 mr-2" />
-              View in AR
-            </Button>
+            <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-sm rounded-full px-3 py-1 flex items-center space-x-1">
+              <Eye className="w-4 h-4 text-white" />
+              <span className="text-sm text-white font-medium">AR</span>
+            </div>
           )}
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          <div className="flex items-start justify-between mb-3">
-            <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-              {item.name}
-            </h3>
-            <span className="text-xl font-bold text-primary">${item.price}</span>
-          </div>
+        <div className="p-4">
+          <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors mb-2">
+            {item.name}
+          </h3>
 
-          <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{item.description}</p>
-
-          {/* Prep Time */}
-          {item.prepTime && (
-            <div className="flex items-center space-x-2 mb-4">
-              <Clock className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">{item.prepTime}</span>
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            {item.rating && (
+              <div className="flex items-center space-x-1">
+                <Star className="w-4 h-4 fill-warning text-warning" />
+                <span>{item.rating}</span>
+              </div>
+            )}
+            {item.prepTime && (
+              <div className="flex items-center space-x-1">
+                <Clock className="w-4 h-4" />
+                <span>{item.prepTime}</span>
+              </div>
+            )}
+            <div className="flex items-center space-x-1">
+              {item.isVegetarian && <Leaf className="w-4 h-4 text-success" />}
+              {item.isSpicy && <Flame className="w-4 h-4 text-destructive" />}
             </div>
-          )}
-
-          {/* Add to Cart Button */}
-          <Button 
-            onClick={handleAddToCart}
-            className="w-full bg-gradient-food hover:shadow-food transition-all duration-300 group"
-          >
-            <Plus className="w-4 h-4 mr-2 group-hover:rotate-90 transition-transform" />
-            Add to Cart
-          </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -13,7 +13,7 @@ import lavaCakeImg from "@/assets/lava-cake.jpg";
 import cocktailImg from "@/assets/cocktail.jpg";
 
 interface MenuPageProps {
-  onBack: () => void;
+  onBack?: () => void;
 }
 
 export interface MenuItem {
@@ -89,24 +89,19 @@ const sampleMenu: MenuItem[] = [
 ];
 
 const MenuPage = ({ onBack }: MenuPageProps) => {
-  const [selectedCategory, setSelectedCategory] = useState("starters");
-  const [searchQuery, setSearchQuery] = useState("");
   const [showCart, setShowCart] = useState(false);
-  const { items, getTotalItems } = useCart();
+  const { getTotalItems } = useCart();
 
   const categories = [
     { id: "starters", name: "Starters", icon: "🥗" },
-    { id: "mains", name: "Mains", icon: "🍖" },
-    { id: "desserts", name: "Desserts", icon: "🍰" },
+    { id: "mains", name: "Main Course", icon: "🍖" },
+    { id: "desserts", name: "Dessert", icon: "🍰" },
     { id: "drinks", name: "Drinks", icon: "🍹" }
   ];
 
-  const filteredMenu = sampleMenu.filter(item => {
-    const matchesCategory = item.category === selectedCategory;
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         item.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const getMenuByCategory = (categoryId: string) => {
+    return sampleMenu.filter(item => item.category === categoryId);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -114,12 +109,7 @@ const MenuPage = ({ onBack }: MenuPageProps) => {
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" onClick={onBack} className="p-2">
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-              <h1 className="text-2xl font-bold text-foreground">Menu</h1>
-            </div>
+            <h1 className="text-3xl font-bold text-foreground">TasteAR Menu</h1>
             <Button 
               variant="outline" 
               size="sm" 
@@ -135,42 +125,29 @@ const MenuPage = ({ onBack }: MenuPageProps) => {
               )}
             </Button>
           </div>
-          
-          {/* Search Bar */}
-          <div className="mt-4 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search dishes..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-secondary border-border"
-            />
-          </div>
         </div>
       </header>
 
-      {/* Category Tabs */}
-      <div className="sticky top-[120px] z-30 bg-background/95 backdrop-blur-sm border-b border-border">
-        <CategoryTabs
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-        />
-      </div>
-
-      {/* Menu Items */}
+      {/* Menu by Categories */}
       <main className="container mx-auto px-6 py-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredMenu.map((item) => (
-            <FoodCard key={item.id} item={item} />
-          ))}
-        </div>
-
-        {filteredMenu.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">No dishes found matching your search.</p>
-          </div>
-        )}
+        {categories.map((category) => {
+          const categoryItems = getMenuByCategory(category.id);
+          if (categoryItems.length === 0) return null;
+          
+          return (
+            <section key={category.id} className="mb-12">
+              <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center">
+                <span className="text-3xl mr-3">{category.icon}</span>
+                {category.name}
+              </h2>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {categoryItems.map((item) => (
+                  <FoodCard key={item.id} item={item} />
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </main>
 
       {/* Cart Sidebar */}
