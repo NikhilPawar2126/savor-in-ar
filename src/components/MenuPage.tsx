@@ -118,6 +118,7 @@ const sampleMenu: MenuItem[] = [
     price: 14,
     image: cocktailImg,
     category: "drinks",
+    modelUrl: "/models/cocktail.glb",
     rating: 4.7,
     prepTime: "5 min",
     ingredients: ["Premium Spirits", "Fresh Citrus", "House-made Syrups", "Bitters", "Garnishes"],

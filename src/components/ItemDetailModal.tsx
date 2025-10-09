@@ -29,7 +29,35 @@ const ItemDetailModal = ({ item, isOpen, onClose }: ItemDetailModalProps) => {
 
   const handleViewAR = () => {
     if (item.modelUrl) {
-      alert(`Opening AR view for ${item.name}. In production, this would launch the AR viewer with the 3D model.`);
+      // Create AR container overlay
+      const arContainer = document.createElement("div");
+      arContainer.style.position = "fixed";
+      arContainer.style.top = "0";
+      arContainer.style.left = "0";
+      arContainer.style.width = "100%";
+      arContainer.style.height = "100%";
+      arContainer.style.background = "rgba(0, 0, 0, 0.8)";
+      arContainer.style.display = "flex";
+      arContainer.style.justifyContent = "center";
+      arContainer.style.alignItems = "center";
+      arContainer.style.zIndex = "9999";
+
+      // Create model-viewer element
+      const modelViewer = document.createElement("model-viewer");
+      modelViewer.setAttribute("src", item.modelUrl);
+      modelViewer.setAttribute("ar", "");
+      modelViewer.setAttribute("camera-controls", "");
+      modelViewer.setAttribute("auto-rotate", "");
+      modelViewer.setAttribute("style", "width: 90%; height: 500px; border-radius: 20px;");
+
+      // Append model to container
+      arContainer.appendChild(modelViewer);
+      document.body.appendChild(arContainer);
+
+      // Close AR viewer when clicking outside
+      arContainer.addEventListener("click", () => {
+        document.body.removeChild(arContainer);
+      });
     }
   };
 
@@ -45,12 +73,12 @@ const ItemDetailModal = ({ item, isOpen, onClose }: ItemDetailModalProps) => {
         <div className="space-y-6">
           {/* Image */}
           <div className="relative aspect-video rounded-lg overflow-hidden">
-            <img 
-              src={item.image} 
+            <img
+              src={item.image}
               alt={item.name}
               className="w-full h-full object-cover"
             />
-            
+
             {/* Price and Rating Overlay */}
             <div className="absolute top-4 right-4 space-y-2">
               <div className="bg-gradient-food text-primary-foreground rounded-full px-4 py-2">
@@ -68,7 +96,7 @@ const ItemDetailModal = ({ item, isOpen, onClose }: ItemDetailModalProps) => {
           {/* Description and Info */}
           <div className="space-y-4">
             <p className="text-muted-foreground leading-relaxed">{item.description}</p>
-            
+
             {/* Tags */}
             <div className="flex flex-wrap gap-2">
               {item.isVegetarian && (
@@ -166,13 +194,13 @@ const ItemDetailModal = ({ item, isOpen, onClose }: ItemDetailModalProps) => {
                   <Button
                     onClick={handleViewAR}
                     variant="outline"
-                    className="flex-1 border-primary/50 hover:border-primary"
+                    className="px-4 py-2 bg-green-500 rounded-lg text-white hover:bg-green-600 transition"
                   >
                     <Eye className="w-4 h-4 mr-2" />
                     View in AR
                   </Button>
                 )}
-                <Button 
+                <Button
                   onClick={handleAddToCart}
                   className="flex-1 bg-gradient-food hover:shadow-food transition-all duration-300"
                   size="lg"
