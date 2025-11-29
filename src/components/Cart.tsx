@@ -83,9 +83,9 @@ const Cart = ({ isOpen, onClose }: CartProps) => {
                     </div>
                     
                     <div className="text-right">
-                      <p className="text-sm text-muted-foreground">${item.price} each</p>
+                      <p className="text-sm text-muted-foreground">₹{item.price} each</p>
                       <p className="font-semibold text-foreground">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        ₹{(item.price * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -100,16 +100,16 @@ const Cart = ({ isOpen, onClose }: CartProps) => {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span className="text-foreground">${state.total.toFixed(2)}</span>
+                  <span className="text-foreground">₹{state.total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Tax</span>
-                  <span className="text-foreground">${(state.total * 0.1).toFixed(2)}</span>
+                  <span className="text-foreground">₹{(state.total * 0.1).toFixed(2)}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-semibold text-lg">
                   <span className="text-foreground">Total</span>
-                  <span className="text-primary">${(state.total * 1.1).toFixed(2)}</span>
+                  <span className="text-primary">₹{(state.total * 1.1).toFixed(2)}</span>
                 </div>
               </div>
 

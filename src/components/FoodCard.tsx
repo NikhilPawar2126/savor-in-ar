@@ -31,7 +31,7 @@ const FoodCard = ({ item, onItemClick }: FoodCardProps) => {
           
           {/* Price Badge */}
           <div className="absolute top-3 right-3 bg-gradient-food text-primary-foreground rounded-full px-3 py-1">
-            <span className="text-lg font-bold">${item.price}</span>
+            <span className="text-lg font-bold">₹{item.price}</span>
           </div>
 
           {/* AR Badge */}

@@ -82,7 +82,7 @@ const ItemDetailModal = ({ item, isOpen, onClose }: ItemDetailModalProps) => {
             {/* Price and Rating Overlay */}
             <div className="absolute top-4 right-4 space-y-2">
               <div className="bg-gradient-food text-primary-foreground rounded-full px-4 py-2">
-                <span className="text-2xl font-bold">${item.price}</span>
+                <span className="text-2xl font-bold">₹{item.price}</span>
               </div>
               {item.rating && (
                 <div className="bg-black/70 backdrop-blur-sm rounded-full px-3 py-1 flex items-center space-x-1">
@@ -206,7 +206,7 @@ const ItemDetailModal = ({ item, isOpen, onClose }: ItemDetailModalProps) => {
                   size="lg"
                 >
                   <Plus className="w-4 h-4 mr-2" />
-                  Add {quantity} to Cart - ${(item.price * quantity).toFixed(2)}
+                  Add {quantity} to Cart - ₹{(item.price * quantity).toFixed(2)}
                 </Button>
               </div>
             </div>

@@ -10,21 +10,21 @@ const menuItems: MenuItem[] = [
   {
     id: 1,
     name: "Crispy Calamari",
-    price: "₹320",
+    price: "₹450",
     image: "/images/calamari.jpg",
     modelUrl: "/models/calamari.glb"
   },
   {
     id: 2,
     name: "Grilled Sandwich",
-    price: "₹250",
+    price: "₹350",
     image: "/images/sandwich.jpg",
     modelUrl: "/models/sandwich.glb"
   },
   {
     id: 3,
     name: "Cheese Burger",
-    price: "₹280",
+    price: "₹550",
     image: "/images/burger.jpg",
     modelUrl: "/models/burger.glb"
   }
